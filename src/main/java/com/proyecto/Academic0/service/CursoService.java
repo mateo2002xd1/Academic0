@@ -51,15 +51,18 @@ public class CursoService {
         CursoResponse curso = new CursoResponse();
         
         Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
+        
         if (cursoExiste.isPresent()){
             curso.setId(cursoExiste.get().getId());
             curso.setNombre(cursoExiste.get().getNombre());
             curso.setDescripcion(cursoExiste.get().getDescripcion());
             curso.setActivo(cursoExiste.get().isActivo());
             curso.setFechacreacion(cursoExiste.get().getFechacreacion());
+            
+            return curso;
+        }else{
+            throw new RuntimeException("Curso no existe");   
         }
-        
-        return curso;
     }
 
     public String actualizarCurso(Integer id, CursoRequest cursoDatos){
@@ -70,7 +73,7 @@ public class CursoService {
             
             return "Curso actualizado";   
         }else{
-            return "Curso no existe";   
+            throw new RuntimeException("Curso no existe");   
         }
     }
 
@@ -81,7 +84,7 @@ public class CursoService {
             
             return "Curso eliminado";
         }else{
-            return "Curso no existe";  
+            throw new RuntimeException("Curso no existe");   
         }
         
     }

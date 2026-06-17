@@ -5,7 +5,6 @@
 package com.proyecto.Academic0.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -14,18 +13,10 @@ import lombok.NoArgsConstructor;
  *
  * @author trabajo
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CursoRequest {
-    
-    @NotBlank(message = "Nombre del curso no puede ser vacio")
-    private String nombre;
-    
-    @NotBlank(message = "Descripcion del curso no puede ser vacio")
-    private String descripcion;
-    
-    @NotNull(message = "Estado del curso no puede ser vacio")
-    private boolean activo;
+public class AuthResponse {
+    @NotBlank(message = "Token no generado")
+    private String token;
 }

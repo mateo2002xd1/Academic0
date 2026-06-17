@@ -4,6 +4,8 @@
  */
 package com.proyecto.Academic0.dto;
 
+import com.proyecto.Academic0.entity.RolEntity;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -18,14 +20,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CursoRequest {
-    
-    @NotBlank(message = "Nombre del curso no puede ser vacio")
+public class UsuarioRequest {
+    @NotBlank(message = "Nombre no puede ser vacio")
     private String nombre;
     
-    @NotBlank(message = "Descripcion del curso no puede ser vacio")
-    private String descripcion;
+    @Email(message = "Email no valido")
+    private String correo;
     
-    @NotNull(message = "Estado del curso no puede ser vacio")
-    private boolean activo;
+    @NotNull(message = "Edad no puede ser vacio")
+    private Integer edad;
+    
+    @NotNull(message = "Rol no puede ser vacio")
+    private Integer rol;
 }
