@@ -4,6 +4,7 @@
  */
 package com.proyecto.Academic0.security;
 
+import com.proyecto.Academic0.entity.UsuarioEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 
@@ -26,9 +27,10 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiracionToken;
     
-    public String generarJWT(String correo){
+    public String generarJWT(UsuarioEntity usuario){
         return Jwts.builder().
-                subject(correo).
+                subject(usuario.getCorreo()).
+                claim("rol", usuario.getRol().getNombre()).
                 issuedAt(new Date()).
                 expiration(new Date(System.currentTimeMillis() + expiracionToken)).
                 signWith(generarKey()).

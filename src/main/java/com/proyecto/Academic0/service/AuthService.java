@@ -32,7 +32,7 @@ public class AuthService {
                 throw new RuntimeException("Usuario no registrado");
             }else{
                 if(PasswordService.matchPassword(usuarioExiste.get().getPassword_hash(), usuarioLogin.getPassword())){
-                    return new AuthResponse(jwtService.generarJWT(usuarioExiste.get().getCorreo()));
+                    return new AuthResponse(jwtService.generarJWT(usuarioExiste.get()));
                 }else{
                     throw new RuntimeException("Credenciales incorrectas");
                 }

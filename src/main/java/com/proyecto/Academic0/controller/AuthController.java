@@ -6,7 +6,6 @@ package com.proyecto.Academic0.controller;
 
 import com.proyecto.Academic0.dto.AuthRequest;
 import com.proyecto.Academic0.dto.AuthResponse;
-import com.proyecto.Academic0.security.PasswordService;
 import com.proyecto.Academic0.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

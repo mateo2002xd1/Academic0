@@ -12,6 +12,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,21 +39,25 @@ public class UsuarioController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UsuarioResponse>> listarUsuarios(){
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.listarUsuarios());
     }
 
     @GetMapping("/{correo}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioResponse> buscarUsuario(@PathVariable String correo){
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.buscarUsuario(correo));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<String> actualizarUsuario(@PathVariable Integer id, @Valid @RequestBody UsuarioRequest usuario){
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.actualizarUsuario(id, usuario));
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> eliminarUsuario(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.eliminarUsuario(id));
     }

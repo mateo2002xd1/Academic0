@@ -24,8 +24,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 
 import org.springframework.web.filter.OncePerRequestFilter;
-import java.util.Collections;
 import java.util.Optional;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter{
@@ -52,10 +52,13 @@ public class JwtFilter extends OncePerRequestFilter{
         Optional<UsuarioEntity> usuarioExiste = usuarioRepository.findByCorreo(correo);
         
         if(usuarioExiste.isPresent() && jwtService.validarJWT(token, correo)){
+            
+            UserDetails usuario = usuarioExiste.get();
+            
             UsernamePasswordAuthenticationToken authAutorizado = new UsernamePasswordAuthenticationToken(
-                    correo,
+                    usuario,
                     null,
-                    Collections.emptyList()
+                    usuario.getAuthorities()
             );
             
             authAutorizado.setDetails(

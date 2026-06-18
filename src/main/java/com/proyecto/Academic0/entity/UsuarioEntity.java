@@ -12,10 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
+import java.util.Collection;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -26,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioEntity {
+public class UsuarioEntity implements UserDetails{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +51,22 @@ public class UsuarioEntity {
     @ManyToOne
     @JoinColumn(name = "rol_id")
     private RolEntity rol;
+    
+    @Override
+    public String getUsername(){
+        return correo;
+    }
+    
+    @Override
+    public String getPassword(){
+        return password_hash;
+    }
+    
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return List.of(
+            new SimpleGrantedAuthority(rol.getNombre())
+        );
+    }
+    
 }

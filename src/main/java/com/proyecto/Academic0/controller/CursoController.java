@@ -19,40 +19,45 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  *
  * @author trabajo
  */
 @RestController
-@RequestMapping("/cursos")
+@RequestMapping("/curso")
 public class CursoController {
     @Autowired
     private CursoService cursoService;
     
     @PostMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> crearCursoController(@Valid @RequestBody CursoRequest cursoNuevo){
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.crearCurso(cursoNuevo));
     }
     
+    @PreAuthorize("hasAnyRole('ADMIN, USER')")
     @GetMapping("")
     public ResponseEntity<List<CursoResponse>> listarCursosController(){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.listarCursos());
     }
-
+    
+    @PreAuthorize("hasAnyRole('ADMIN, USER')")
     @GetMapping("/{id}")
     public ResponseEntity<CursoResponse> buscarCursoController(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.buscarCurso(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> actualizarCursoController(@PathVariable Integer id, @Valid @RequestBody CursoRequest cursoDatos){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.actualizarCurso(id, cursoDatos));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> eliminarCursoController(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.eliminarCurso(id));
     }
