@@ -4,9 +4,9 @@
  */
 package com.proyecto.Academic0.repository;
 
+import com.proyecto.Academic0.entity.CursoEntity;
 import com.proyecto.Academic0.entity.InscripcionEntity;
 import com.proyecto.Academic0.entity.UsuarioEntity;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,11 +17,15 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
+public interface InscripcionRepository extends JpaRepository<InscripcionEntity, Integer>{
 
-    public Optional<UsuarioEntity> findByNombre(String nombre);
+    boolean existsByUsuarioAndCurso(
+            UsuarioEntity usuario,
+            CursoEntity curso
+    );
 
-    public Optional<UsuarioEntity> findByCorreo(String correo);
+    public Iterable<InscripcionEntity> findAllByUsuario(UsuarioEntity id);
 
+    public Optional<InscripcionEntity> findByUsuarioAndCurso(UsuarioEntity usuario, CursoEntity curso);
     
 }

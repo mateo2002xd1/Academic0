@@ -15,14 +15,20 @@
     <groupId>com.proyecto</groupId>
     <artifactId>Academic0</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Academic0</name>
+    <name>academic0</name>
 
     <properties>
         <java.version>25</java.version>
     </properties>
 
     <dependencies>
-
+        
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+        
         <!-- REST API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
