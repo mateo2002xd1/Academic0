@@ -7,10 +7,11 @@ package com.proyecto.Academic0.service;
 import com.proyecto.Academic0.dto.CursoRequest;
 import com.proyecto.Academic0.dto.CursoResponse;
 import com.proyecto.Academic0.entity.CursoEntity;
+import com.proyecto.Academic0.mapping.CursoMapper;
 import com.proyecto.Academic0.repository.CursoRepository;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,39 +26,30 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
     
+    @Autowired
+    private CursoMapper cursoMapper;
+    
+    
     public String crearCurso(CursoRequest cursoNuevo){
-        CursoEntity cursoIngresar = new CursoEntity();
-        
-        cursoIngresar.setNombre(cursoNuevo.getNombre());
-        cursoIngresar.setDescripcion(cursoNuevo.getDescripcion());
-        cursoIngresar.setActivo(cursoNuevo.isActivo());
+        CursoEntity cursoIngresar = cursoMapper.toEntity(cursoNuevo);
         cursoIngresar.setFechacreacion(LocalDate.now());
-        
         cursoRepository.save(cursoIngresar);
         return "Curso creado";
     }
 
-    public List<CursoResponse> listarCursos(){
-        List<CursoResponse> cursos = new ArrayList<>();
-        for(CursoEntity curso : cursoRepository.findAll()){
-            CursoResponse cursoResponse = new CursoResponse(curso.getId(), curso.getNombre(), curso.getDescripcion(), curso.isActivo(), curso.getFechacreacion());
-            cursos.add(cursoResponse);
-        }
-        
-        return cursos;
+    public Page<CursoResponse> listarCursos(Pageable pageable) {
+
+        return cursoRepository.findAll(pageable)
+                .map(curso -> cursoMapper.toResponse(curso));
     }
 
     public CursoResponse buscarCurso(Integer id){
-        CursoResponse curso = new CursoResponse();
+        CursoResponse curso;
         
         Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
         
         if (cursoExiste.isPresent()){
-            curso.setId(cursoExiste.get().getId());
-            curso.setNombre(cursoExiste.get().getNombre());
-            curso.setDescripcion(cursoExiste.get().getDescripcion());
-            curso.setActivo(cursoExiste.get().isActivo());
-            curso.setFechacreacion(cursoExiste.get().getFechacreacion());
+            curso = cursoMapper.toResponse(cursoExiste.get());
             
             return curso;
         }else{
@@ -68,7 +60,7 @@ public class CursoService {
     public String actualizarCurso(Integer id, CursoRequest cursoDatos){
         Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
         if (cursoExiste.isPresent()){
-            CursoEntity cursoActualizar = new CursoEntity(cursoExiste.get().getId(), cursoDatos.getNombre(), cursoDatos.getDescripcion(), cursoDatos.isActivo(), cursoExiste.get().getFechacreacion());
+            CursoEntity cursoActualizar = cursoMapper.toEntity(cursoDatos);
             cursoRepository.save(cursoActualizar);
             
             return "Curso actualizado";   

@@ -16,10 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    @NotBlank(message = "Token no generado")
-    private String token;
-    
-    @NotBlank(message = "Refresh Token no generado")
+public class RefreshTokenRequest {
+    @NotBlank(message = "Token no puede estar vacio")
     private String refreshToken;
 }

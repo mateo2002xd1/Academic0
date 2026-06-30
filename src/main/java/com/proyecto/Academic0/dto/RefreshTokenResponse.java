@@ -5,8 +5,8 @@
 package com.proyecto.Academic0.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -16,10 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    @NotBlank(message = "Token no generado")
+public class RefreshTokenResponse {
+    @NotBlank(message = "Token no puede estar vacio")
     private String token;
-    
-    @NotBlank(message = "Refresh Token no generado")
-    private String refreshToken;
 }

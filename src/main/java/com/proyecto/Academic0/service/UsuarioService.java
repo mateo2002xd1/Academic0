@@ -8,6 +8,7 @@ import com.proyecto.Academic0.dto.UsuarioRequest;
 import com.proyecto.Academic0.dto.UsuarioResponse;
 import com.proyecto.Academic0.entity.RolEntity;
 import com.proyecto.Academic0.entity.UsuarioEntity;
+import com.proyecto.Academic0.mapping.UsuarioMapper;
 import com.proyecto.Academic0.repository.RolRepository;
 import com.proyecto.Academic0.repository.UsuarioRepository;
 import java.util.ArrayList;
@@ -29,13 +30,15 @@ public class UsuarioService {
     @Autowired
     private RolRepository rolRepository;
     
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+    
     public String crearUsuario(UsuarioRequest usuario){
         Optional<RolEntity> usuarioRol = rolRepository.findById(usuario.getRol());
         
         if(usuarioRol.isPresent()){
-            RolEntity rol = usuarioRol.get();
-        
-            UsuarioEntity usuarioNuevo = new UsuarioEntity(null, usuario.getNombre(), usuario.getCorreo(), usuario.getEdad(), null, rol);
+            UsuarioEntity usuarioNuevo = usuarioMapper.toEntity(usuario);
+            usuarioNuevo.setRol(usuarioRol.get());
 
             usuarioRepository.save(usuarioNuevo);
         
@@ -46,11 +49,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponse> listarUsuarios(){
-        List<UsuarioResponse> usuarios = new ArrayList<>();
-        for(UsuarioEntity usuario: usuarioRepository.findAll()){
-            UsuarioResponse usuarioBuscado = new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getCorreo(), usuario.getEdad(), usuario.getRol());
-            usuarios.add(usuarioBuscado);
-        }
+        List<UsuarioResponse> usuarios = usuarioMapper.toResponseList(usuarioRepository.findAll());
         
         return usuarios;
     }
@@ -59,8 +58,8 @@ public class UsuarioService {
         Optional<UsuarioEntity> usuarioExiste = usuarioRepository.findByCorreo(correo);
         
         if(usuarioExiste.isPresent()){
-            UsuarioEntity usuarioBuscado = usuarioExiste.get();
-            UsuarioResponse usuario = new UsuarioResponse(usuarioBuscado.getId(), usuarioBuscado.getNombre(), usuarioBuscado.getCorreo(), usuarioBuscado.getEdad(), usuarioBuscado.getRol());
+            UsuarioResponse usuario = usuarioMapper.toResponse(usuarioExiste.get());
+            usuario.setRol(usuarioExiste.get().getRol());
             return usuario;
         }else{
             throw new RuntimeException("Usuario no existe");
@@ -77,10 +76,13 @@ public class UsuarioService {
             
             Optional<RolEntity> rolExiste = rolRepository.findById(usuario.getRol());
             UsuarioEntity usuarioActualizar;
+            usuarioActualizar = usuarioMapper.toEntity(usuario);
+            usuarioActualizar.setPassword_hash(usuarioBuscado.getPassword_hash());
+            
             if(rolExiste.isPresent()){
-                usuarioActualizar = new UsuarioEntity(usuarioBuscado.getId(), usuario.getNombre(), usuario.getCorreo(), usuario.getEdad(), usuarioBuscado.getPassword_hash(), rolExiste.get());   
+                usuarioActualizar.setRol(rolExiste.get());
             }else{
-                usuarioActualizar = new UsuarioEntity(usuarioBuscado.getId(), usuario.getNombre(), usuario.getCorreo(), usuario.getEdad(), usuarioBuscado.getPassword_hash(), usuarioBuscado.getRol());   
+                usuarioActualizar.setRol(usuarioBuscado.getRol());
             }
             usuarioRepository.save(usuarioActualizar);
             

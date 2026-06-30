@@ -7,6 +7,7 @@ package com.proyecto.Academic0.repository;
 import com.proyecto.Academic0.entity.CursoEntity;
 import com.proyecto.Academic0.entity.InscripcionEntity;
 import com.proyecto.Academic0.entity.UsuarioEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,7 @@ public interface InscripcionRepository extends JpaRepository<InscripcionEntity, 
             CursoEntity curso
     );
 
-    public Iterable<InscripcionEntity> findAllByUsuario(UsuarioEntity id);
+    public List<InscripcionEntity> findAllByUsuario(UsuarioEntity id);
 
     public Optional<InscripcionEntity> findByUsuarioAndCurso(UsuarioEntity usuario, CursoEntity curso);
     

@@ -9,6 +9,7 @@ import com.proyecto.Academic0.dto.InscripcionResponse;
 import com.proyecto.Academic0.entity.CursoEntity;
 import com.proyecto.Academic0.entity.InscripcionEntity;
 import com.proyecto.Academic0.entity.UsuarioEntity;
+import com.proyecto.Academic0.mapping.InscripcionMapper;
 import com.proyecto.Academic0.repository.CursoRepository;
 import com.proyecto.Academic0.repository.InscripcionRepository;
 import com.proyecto.Academic0.repository.UsuarioRepository;
@@ -35,6 +36,9 @@ public class InscripcionService {
     
     @Autowired
     private CursoRepository cursoRepository;
+    
+    @Autowired
+    private InscripcionMapper inscripcionMapper;
     
     public String crearInscripcion(InscripcionRequest inscripcionNuevo){
         InscripcionEntity inscripcionIngresar = new InscripcionEntity();
@@ -66,17 +70,13 @@ public class InscripcionService {
     }
 
     public List<InscripcionResponse> listarInscripciones(){
-        List<InscripcionResponse> inscripciones = new ArrayList<>();
+        List<InscripcionResponse> inscripciones;
         
         String correoUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         
         Optional<UsuarioEntity> usuario = usuarioRepository.findByCorreo(correoUsuario);
         if(usuario.isPresent()){
-            for(InscripcionEntity inscripcion : inscripcionRepository.findAllByUsuario(usuario.get())){
-                InscripcionResponse inscripcionResponse = new InscripcionResponse(inscripcion.getId(), inscripcion.getCurso().getNombre(), inscripcion.getFechaInscripcion());
-                inscripciones.add(inscripcionResponse);
-            }
-
+            inscripciones = inscripcionMapper.toResponseList(inscripcionRepository.findAllByUsuario(usuario.get()));
             return inscripciones;
         }else{
             throw new RuntimeException("Usuario no existe");   
@@ -108,41 +108,6 @@ public class InscripcionService {
             }
         }else{
             throw new RuntimeException("Usuario no existe");   
-        }
-        
-        
-        
+        }   
     }
-    
-    /*public CursoResponse buscarCurso(Integer id){
-        CursoResponse curso = new CursoResponse();
-        
-        Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
-        
-        if (cursoExiste.isPresent()){
-            curso.setId(cursoExiste.get().getId());
-            curso.setNombre(cursoExiste.get().getNombre());
-            curso.setDescripcion(cursoExiste.get().getDescripcion());
-            curso.setActivo(cursoExiste.get().isActivo());
-            curso.setFechacreacion(cursoExiste.get().getFechacreacion());
-            
-            return curso;
-        }else{
-            throw new RuntimeException("Curso no existe");   
-        }
-    }
-
-    public String actualizarCurso(Integer id, CursoRequest cursoDatos){
-        Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
-        if (cursoExiste.isPresent()){
-            CursoEntity cursoActualizar = new CursoEntity(cursoExiste.get().getId(), cursoDatos.getNombre(), cursoDatos.getDescripcion(), cursoDatos.isActivo(), cursoExiste.get().getFechacreacion());
-            cursoRepository.save(cursoActualizar);
-            
-            return "Curso actualizado";   
-        }else{
-            throw new RuntimeException("Curso no existe");   
-        }
-    }
-
-    */
 }

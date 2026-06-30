@@ -6,6 +6,8 @@ package com.proyecto.Academic0.controller;
 
 import com.proyecto.Academic0.dto.AuthRequest;
 import com.proyecto.Academic0.dto.AuthResponse;
+import com.proyecto.Academic0.dto.RefreshTokenRequest;
+import com.proyecto.Academic0.dto.RefreshTokenResponse;
 import com.proyecto.Academic0.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,5 +51,17 @@ public class AuthController {
     @PutMapping("/registro")
     public ResponseEntity<String> RegistroController(@Valid @RequestBody AuthRequest credenciales){
         return ResponseEntity.status(HttpStatus.OK).body(authService.registro(credenciales));
+    }
+    
+    @Operation(
+            summary = "Refresh",
+            description = "Refresh del token"
+    )
+    @ApiResponse(responseCode = "200", description = "Refresh correctamente")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    @ApiResponse(responseCode = "500", description = "Error interno")
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> RefreshToken(@Valid @RequestBody RefreshTokenRequest resquest){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(resquest));
     }
 }
