@@ -9,6 +9,7 @@ import com.proyecto.Academic0.dto.InscripcionResponse;
 import com.proyecto.Academic0.entity.CursoEntity;
 import com.proyecto.Academic0.entity.InscripcionEntity;
 import com.proyecto.Academic0.entity.UsuarioEntity;
+import com.proyecto.Academic0.enums.NotificationType;
 import com.proyecto.Academic0.mapping.InscripcionMapper;
 import com.proyecto.Academic0.repository.CursoRepository;
 import com.proyecto.Academic0.repository.InscripcionRepository;
@@ -40,6 +41,9 @@ public class InscripcionService {
     @Autowired
     private InscripcionMapper inscripcionMapper;
     
+    @Autowired
+    private NotificationFactory notificationFactory;
+    
     public String crearInscripcion(InscripcionRequest inscripcionNuevo){
         InscripcionEntity inscripcionIngresar = new InscripcionEntity();
         
@@ -63,6 +67,7 @@ public class InscripcionService {
             inscripcionIngresar.setFechaInscripcion(LocalDate.now());
 
             inscripcionRepository.save(inscripcionIngresar);
+            notificationFactory.getNotification(NotificationType.SMS).enviar(correoUsuario, correoUsuario);
             return "Incripcion correcta";
         }else{
             throw new RuntimeException("Usuario ya registrado en el curso");   
