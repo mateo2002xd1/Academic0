@@ -61,6 +61,8 @@ public class CursoService {
         Optional<CursoEntity> cursoExiste = cursoRepository.findById(id);
         if (cursoExiste.isPresent()){
             CursoEntity cursoActualizar = cursoMapper.toEntity(cursoDatos);
+            cursoActualizar.setFechacreacion(cursoExiste.get().getFechacreacion());
+            cursoActualizar.setId(cursoExiste.get().getId());
             cursoRepository.save(cursoActualizar);
             
             return "Curso actualizado";   
