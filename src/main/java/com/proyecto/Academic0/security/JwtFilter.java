@@ -6,6 +6,7 @@ package com.proyecto.Academic0.security;
 
 import com.proyecto.Academic0.entity.UsuarioEntity;
 import com.proyecto.Academic0.repository.UsuarioRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;
 
 import jakarta.servlet.FilterChain;
@@ -47,29 +48,36 @@ public class JwtFilter extends OncePerRequestFilter{
         
         String token = authHeader.substring(7);
         
-        String correo = jwtService.leerCorreo(token);
-        
-        Optional<UsuarioEntity> usuarioExiste = usuarioRepository.findByCorreo(correo);
-        
-        if(usuarioExiste.isPresent() && jwtService.validarJWT(token, correo)){
-            
-            UserDetails usuario = usuarioExiste.get();
-            
-            UsernamePasswordAuthenticationToken authAutorizado = new UsernamePasswordAuthenticationToken(
-                    usuario,
-                    null,
-                    usuario.getAuthorities()
-            );
-            
-            authAutorizado.setDetails(
-                    new WebAuthenticationDetailsSource()
-                            .buildDetails(request)
-            );
-            
-            SecurityContextHolder.getContext().setAuthentication(authAutorizado);
+        try{
+            String correo = jwtService.leerCorreo(token);
+
+            Optional<UsuarioEntity> usuarioExiste = usuarioRepository.findByCorreo(correo);
+
+            if(usuarioExiste.isPresent() && jwtService.validarJWT(token, correo)){
+
+                UserDetails usuario = usuarioExiste.get();
+
+                UsernamePasswordAuthenticationToken authAutorizado = new UsernamePasswordAuthenticationToken(
+                        usuario,
+                        null,
+                        usuario.getAuthorities()
+                );
+
+                authAutorizado.setDetails(
+                        new WebAuthenticationDetailsSource()
+                                .buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authAutorizado);
+            }
+
+            filterChain.doFilter(request, response);
+        }catch (ExpiredJwtException e) {
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Token expirado"
+                );
+            }
         }
-        
-        filterChain.doFilter(request, response);
-    }
     
 }

@@ -84,6 +84,9 @@ public class UsuarioService {
             }else{
                 usuarioActualizar.setRol(usuarioBuscado.getRol());
             }
+            
+            usuarioActualizar.setId(usuarioBuscado.getId());
+            
             usuarioRepository.save(usuarioActualizar);
             
             return "Usuario actualizado";

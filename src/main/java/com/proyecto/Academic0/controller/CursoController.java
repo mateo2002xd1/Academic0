@@ -48,7 +48,7 @@ public class CursoController {
     @ApiResponse(responseCode = "400", description = "Datos inválidos")
     @ApiResponse(responseCode = "500", description = "Error interno")
     @PostMapping("")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> crearCursoController(@Valid @RequestBody CursoRequest cursoNuevo){
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.crearCurso(cursoNuevo));
     }
@@ -60,7 +60,7 @@ public class CursoController {
     @ApiResponse(responseCode = "200", description = "Cursos listados correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos")
     @ApiResponse(responseCode = "500", description = "Error interno")
-    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("")
     public Page<CursoResponse> listarCursosController(
         @RequestParam(defaultValue = "0") int page,
@@ -79,7 +79,7 @@ public class CursoController {
     @ApiResponse(responseCode = "200", description = "Cursos listado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos")
     @ApiResponse(responseCode = "500", description = "Error interno")
-    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<CursoResponse> buscarCursoController(@PathVariable Integer id){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.buscarCurso(id));
@@ -93,7 +93,7 @@ public class CursoController {
     @ApiResponse(responseCode = "400", description = "Datos inválidos")
     @ApiResponse(responseCode = "500", description = "Error interno")
     @PutMapping("/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> actualizarCursoController(@PathVariable Integer id, @Valid @RequestBody CursoRequest cursoDatos){
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.actualizarCurso(id, cursoDatos));
     }
