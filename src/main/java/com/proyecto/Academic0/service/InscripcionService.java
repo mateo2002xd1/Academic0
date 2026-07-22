@@ -75,13 +75,17 @@ public class InscripcionService {
     }
 
     public List<InscripcionResponse> listarInscripciones(){
-        List<InscripcionResponse> inscripciones;
+        List<InscripcionResponse> inscripciones = new ArrayList<>();
         
         String correoUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         
         Optional<UsuarioEntity> usuario = usuarioRepository.findByCorreo(correoUsuario);
         if(usuario.isPresent()){
-            inscripciones = inscripcionMapper.toResponseList(inscripcionRepository.findAllByUsuario(usuario.get()));
+            for(InscripcionEntity inscripcion : inscripcionRepository.findAllByUsuario(usuario.get()) ){
+                
+                inscripciones.add(new InscripcionResponse(inscripcion.getId(), inscripcion.getCurso().getNombre(), inscripcion.getFechaInscripcion(), inscripcion.getCurso().getId()));
+            }
+            
             return inscripciones;
         }else{
             throw new RuntimeException("Usuario no existe");   

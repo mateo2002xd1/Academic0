@@ -26,4 +26,7 @@ public class InscripcionResponse {
     
     @NotNull(message = "Fecha Inscripcion no puede ser vacio")
     private LocalDate fechaInscripcion;
+    
+    @NotNull(message = "Curso Id no puede ser vacio")
+    private Integer cursoId;
 }
