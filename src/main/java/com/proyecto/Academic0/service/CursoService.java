@@ -10,6 +10,8 @@ import com.proyecto.Academic0.entity.CursoEntity;
 import com.proyecto.Academic0.mapping.CursoMapper;
 import com.proyecto.Academic0.repository.CursoRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Optional;
@@ -40,6 +42,13 @@ public class CursoService {
     public Page<CursoResponse> listarCursos(Pageable pageable) {
 
         return cursoRepository.findAll(pageable)
+                .map(curso -> cursoMapper.toResponse(curso));
+    }
+    
+    public Page<CursoResponse> listarPorNombreCursos(Pageable pageable, String nombre) {
+
+        return cursoRepository
+                .findByNombreContainingIgnoreCase(nombre, pageable)
                 .map(curso -> cursoMapper.toResponse(curso));
     }
 

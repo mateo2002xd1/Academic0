@@ -7,6 +7,8 @@ package com.proyecto.Academic0.repository;
 import com.proyecto.Academic0.entity.CursoEntity;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +21,8 @@ public interface CursoRepository extends JpaRepository<CursoEntity, Integer> {
 
     public List<CursoEntity> findByNombre(String nombre);
     
+    public Page<CursoEntity> findByNombreContainingIgnoreCase(
+            String nombre,
+            Pageable pageable
+    );
 }

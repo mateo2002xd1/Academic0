@@ -64,12 +64,15 @@ public class CursoController {
     @GetMapping("")
     public Page<CursoResponse> listarCursosController(
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String nombre
     ){
         
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-    
-        return cursoService.listarCursos(pageable);
+        if (nombre == null || nombre.isBlank()) {
+            return cursoService.listarCursos(pageable);
+        }
+        return cursoService.listarPorNombreCursos(pageable, nombre);
     }
     
     @Operation(
