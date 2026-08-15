@@ -2,6 +2,7 @@ package com.proyecto.Academic0.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                // CORS
                 .cors(Customizer.withDefaults())
+
+                // CSRF
                 .csrf(csrf -> csrf.disable())
+
+                // Manejo de errores de autenticación
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(
                                 (request, response, authException) ->
@@ -39,9 +45,11 @@ public class SecurityConfig {
                                         )
                         )
                 )
+
+                // Autorización de endpoints
                 .authorizeHttpRequests(auth -> auth
 
-                        // Permitir peticiones OPTIONS (Preflight CORS)
+                        // CORS Preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // Login y registro
@@ -66,9 +74,15 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
 
+                        // Resto
                         .anyRequest().permitAll()
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+                // JWT
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
@@ -78,24 +92,40 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // Frontend local + frontend desplegado en Render
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://academic0-react.onrender.com"
+                )
         );
 
+        // Métodos permitidos
         configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
+        // Headers permitidos
         configuration.setAllowedHeaders(
                 List.of("*")
         );
 
+        // Permitir credenciales
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
         return source;
     }
